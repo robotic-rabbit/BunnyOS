@@ -23,6 +23,13 @@
   
     # Enable networking
     networking.networkmanager.enable = true;
+
+    # Tailscale (Remote Access)
+    services.tailscale.enable = true;
+  
+    # Enable SSH 
+    services.openssh.enable = true;
+
   
     # Set your time zone.
     time.timeZone = "Australia/Sydney";
