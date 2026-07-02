@@ -42,12 +42,15 @@
       LC_TIME = "en_AU.UTF-8";
     };
   
-    # Enable the X11 windowing system.
+    # Enable the X11 windowing system. apparently need this even with wayland
     services.xserver.enable = true;
   
     # Enable the GNOME Desktop Environment.
-    services.xserver.displayManager.gdm.enable = true;
-    services.xserver.desktopManager.gnome.enable = true;
+    services.displayManager.gdm.enable = true;
+    services.desktopManager.gnome.enable = true;
+
+    # Enable Niri tiling window manager
+    programs.niri.enable = true;
   
     # Configure keymap in X11
     services.xserver.xkb = {
