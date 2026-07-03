@@ -1,10 +1,13 @@
  { self, inputs, ... }: {
-  
-  # This tells flake-parts to export this setup globally on the `self` variable!
   flake.homeManagerModules.bunny = { config, pkgs, ... }: {
-    
-    home.stateVersion = "26.05"; 
+
+    home.stateVersion = "26.05"; #don't touch this even if updating
     xdg.configFile."niri/config.kdl".source = ./niri.kdl;
-    
+
+    home.packages = with pkgs; [
+      kitty
+      fuzzel
+    ];
+
   };
 }
