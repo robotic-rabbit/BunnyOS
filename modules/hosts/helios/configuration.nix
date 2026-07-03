@@ -5,6 +5,7 @@
       self.nixosModules.heliosHardware
       self.nixosModules.commonPackages
       # self.nixosModules.niri
+      inputs.home-manager.nixosModules.home-manager
     ];
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -58,6 +59,13 @@
 
     # Enable Niri tiling window manager
     programs.niri.enable = true;
+
+    # adding home manager
+    home-manager = {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+      users.bunny = self.homeManagerModules.bunny;
+    };
   
     # Configure keymap in X11
     services.xserver.xkb = {
