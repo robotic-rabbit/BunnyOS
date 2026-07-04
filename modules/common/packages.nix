@@ -8,6 +8,8 @@
       curl
       vim
       neovim
+      helix
+      lazygit
     ];
   };
 
