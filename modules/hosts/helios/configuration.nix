@@ -31,6 +31,11 @@
     # Enable SSH 
     services.openssh.enable = true;
 
+    # Enable Docker
+    virtualisation.docker.enable = true;
+
+    # Allow your user 'bunny' to run docker commands without sudo
+    # users.users.bunny.extraGroups = [ "docker" ];
   
     # Set your time zone.
     time.timeZone = "Australia/Sydney";
@@ -99,7 +104,7 @@
     users.users."bunny" = {
       isNormalUser = true;
       description = "bunny";
-      extraGroups = [ "networkmanager" "wheel" ];
+      extraGroups = [ "networkmanager" "wheel" "docker"];
       packages = with pkgs; [
       ];
     };
