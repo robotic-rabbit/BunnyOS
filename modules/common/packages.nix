@@ -10,6 +10,7 @@
       neovim
       helix
       lazygit
+      tree
     ];
   };
 
