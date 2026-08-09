@@ -43,7 +43,7 @@
         "d /var/lib/zotero-webdav 0750 1000 1000 -"
       ];
 
-      # WebDAV container running on Docker backend as unprivileged user 1000:1000
+      # WebDAV container running on Docker backend with PUID/PGID for hurlenko/webdav
       virtualisation.oci-containers.backend = "docker";
       virtualisation.oci-containers.containers.zotero-webdav = {
         image = "hurlenko/webdav:v1.3.0";
@@ -52,8 +52,8 @@
           "127.0.0.1:${toString cfg.port}:8080"
         ];
         environment = {
-          UID = "1000";
-          GID = "1000";
+          PUID = "1000";
+          PGID = "1000";
           USERNAME = "zotero";
           SCOPE = "/data";
           RO = "false";
