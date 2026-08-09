@@ -35,6 +35,7 @@
     # Enable Zotero WebDAV sync service
     services.zotero-webdav = {
       enable = true;
+      domain = "burrow"
       environmentFile = "/var/lib/zotero-webdav/env";
     };
 
