@@ -32,7 +32,10 @@
     services.openssh.enable = true;
 
     # Enable Zotero WebDAV sync service
-    services.zotero-webdav.enable = true;
+    services.zotero-webdav = {
+      enable = true;
+      environmentFile = "/var/lib/zotero-webdav/env";
+    };
 
     # Enable Docker
     virtualisation.docker.enable = true;
