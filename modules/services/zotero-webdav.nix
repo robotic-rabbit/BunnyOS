@@ -34,64 +34,67 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    # Enable Podman for running OCI containers
-    virtualisation.podman = {
-      enable = true;
-      dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = true;
-    };
-
-    # Persistent storage directory owned by unprivileged user (1000:1000)
-    systemd.tmpfiles.rules = [
-      "d /var/lib/zotero-webdav 0750 1000 1000 -"
-    ];
-
-    # WebDAV container running as unprivileged user 1000:1000
-    virtualisation.oci-containers.backend = "podman";
-    virtualisation.oci-containers.containers.zotero-webdav = {
-      image = "hurlenko/webdav:v1.3.0";
-      autoStart = true;
-      ports = [
-        "127.0.0.1:${toString cfg.port}:8080"
-      ];
-      environment = {
-        UID = "1000";
-        GID = "1000";
-        USERNAME = "zotero";
-        SCOPE = "/data";
-        RO = "false";
-        AUTH = "true";
-      } // lib.optionalAttrs (cfg.environmentFile == null) {
-        PASSWORD = "change-this-secure-password";
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      # Enable Podman for running OCI containers
+      virtualisation.podman = {
+        enable = true;
+        dockerCompat = true;
+        defaultNetwork.settings.dns_enabled = true;
       };
-      environmentFiles = lib.optional (cfg.environmentFile != null) cfg.environmentFile;
-      volumes = [
-        "/var/lib/zotero-webdav:/data"
+
+      # Persistent storage directory owned by unprivileged user (1000:1000)
+      systemd.tmpfiles.rules = [
+        "d /var/lib/zotero-webdav 0750 1000 1000 -"
       ];
-    };
 
-    # Caddy reverse proxy
-    services.caddy = {
-      enable = true;
-      virtualHosts."${cfg.domain}" = {
-        extraConfig = ''
-          reverse_proxy 127.0.0.1:${toString cfg.port} {
-            header_up Host {http.reverse_proxy.upstream.host}
-            header_up X-Real-IP {http.reverse_proxy.upstream.remote_ip}
-          }
-        '';
+      # WebDAV container running as unprivileged user 1000:1000
+      virtualisation.oci-containers.backend = "podman";
+      virtualisation.oci-containers.containers.zotero-webdav = {
+        image = "hurlenko/webdav:v1.3.0";
+        autoStart = true;
+        ports = [
+          "127.0.0.1:${toString cfg.port}:8080"
+        ];
+        environment = {
+          UID = "1000";
+          GID = "1000";
+          USERNAME = "zotero";
+          SCOPE = "/data";
+          RO = "false";
+          AUTH = "true";
+        } // lib.optionalAttrs (cfg.environmentFile == null) {
+          PASSWORD = "change-this-secure-password";
+        };
+        environmentFiles = lib.optional (cfg.environmentFile != null) cfg.environmentFile;
+        volumes = [
+          "/var/lib/zotero-webdav:/data"
+        ];
       };
-    };
 
-    # Ensure firewall allows HTTP/HTTPS for proxy traffic
-    networking.firewall.allowedTCPPorts = [ 80 443 ];
-  };
+      # Caddy reverse proxy
+      services.caddy = {
+        enable = true;
+        virtualHosts."${cfg.domain}" = {
+          extraConfig = ''
+            reverse_proxy 127.0.0.1:${toString cfg.port} {
+              header_up Host {http.reverse_proxy.upstream.host}
+              header_up X-Real-IP {http.reverse_proxy.upstream.remote_ip}
+            }
+          '';
+        };
+      };
 
-  assertions = [
+      # Ensure firewall allows HTTP/HTTPS for proxy traffic
+      networking.firewall.allowedTCPPorts = [ 80 443 ];
+    })
     {
-      assertion = cfg.enable -> (cfg.domain != "");
-      message = "services.zotero-webdav.domain cannot be empty when zotero-webdav is enabled.";
+      assertions = [
+        {
+          assertion = cfg.enable -> (cfg.domain != "");
+          message = "services.zotero-webdav.domain cannot be empty when zotero-webdav is enabled.";
+        }
+      ];
     }
   ];
 }
