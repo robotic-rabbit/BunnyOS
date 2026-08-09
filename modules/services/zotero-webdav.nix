@@ -38,32 +38,27 @@
       # Ensure Docker daemon is enabled for OCI containers
       virtualisation.docker.enable = true;
 
-      # Persistent storage directory owned by unprivileged user (1000:1000)
+      # Persistent storage directory
       systemd.tmpfiles.rules = [
-        "d /var/lib/zotero-webdav 0750 1000 1000 -"
+        "d /var/lib/zotero-webdav 0750 root root -"
       ];
 
-      # WebDAV container running on Docker backend with PUID/PGID
+      # WebDAV container using robust bytemark/webdav image
       virtualisation.oci-containers.backend = "docker";
       virtualisation.oci-containers.containers.zotero-webdav = {
-        image = "hurlenko/webdav:latest";
+        image = "bytemark/webdav:latest";
         autoStart = true;
         ports = [
-          "127.0.0.1:${toString cfg.port}:8080"
+          "127.0.0.1:${toString cfg.port}:80"
         ];
         environment = {
-          PUID = "1000";
-          PGID = "1000";
           USERNAME = "zotero";
-          SCOPE = "/data";
-          RO = "false";
-          AUTH = "true";
         } // lib.optionalAttrs (cfg.environmentFile == null) {
           PASSWORD = "change-this-secure-password";
         };
         environmentFiles = lib.optional (cfg.environmentFile != null) cfg.environmentFile;
         volumes = [
-          "/var/lib/zotero-webdav:/data"
+          "/var/lib/zotero-webdav:/var/webdav"
         ];
       };
 
