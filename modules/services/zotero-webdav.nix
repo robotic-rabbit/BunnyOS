@@ -35,10 +35,9 @@
     };
 
     config = lib.mkIf cfg.enable {
-      # Enable Podman for running OCI containers
+      # Enable Podman for running OCI containers (without dockerCompat to avoid conflict with native docker service)
       virtualisation.podman = {
         enable = true;
-        dockerCompat = true;
         defaultNetwork.settings.dns_enabled = true;
       };
 
