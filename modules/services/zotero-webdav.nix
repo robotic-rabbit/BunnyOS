@@ -37,7 +37,7 @@
 
       virtualisation.oci-containers.backend = "docker";
       virtualisation.oci-containers.containers.zotero-webdav = {
-        image = "dgraziotin/nginx-webdav";
+        image = "dgraziotin/nginx-webdav-nononsense";
         autoStart = true;
         ports = [
           "127.0.0.1:${toString cfg.port}:80"
