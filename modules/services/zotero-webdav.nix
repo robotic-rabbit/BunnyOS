@@ -43,10 +43,10 @@
         "d /var/lib/zotero-webdav 0750 1000 1000 -"
       ];
 
-      # WebDAV container running on Docker backend with PUID/PGID for hurlenko/webdav
+      # WebDAV container running on Docker backend with PUID/PGID
       virtualisation.oci-containers.backend = "docker";
       virtualisation.oci-containers.containers.zotero-webdav = {
-        image = "hurlenko/webdav:v1.3.0";
+        image = "hurlenko/webdav:latest";
         autoStart = true;
         ports = [
           "127.0.0.1:${toString cfg.port}:8080"
