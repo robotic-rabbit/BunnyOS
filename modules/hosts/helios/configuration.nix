@@ -4,6 +4,7 @@
     imports = [
       self.nixosModules.heliosHardware
       self.nixosModules.commonPackages
+      self.nixosModules.zoteroWebdav
       # self.nixosModules.niri
       inputs.home-manager.nixosModules.home-manager
     ];
