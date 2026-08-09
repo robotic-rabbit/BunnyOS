@@ -35,19 +35,16 @@
     };
 
     config = lib.mkIf cfg.enable {
-      # Enable Podman for running OCI containers (without dockerCompat to avoid conflict with native docker service)
-      virtualisation.podman = {
-        enable = true;
-        defaultNetwork.settings.dns_enabled = true;
-      };
+      # Ensure Docker daemon is enabled for OCI containers
+      virtualisation.docker.enable = true;
 
       # Persistent storage directory owned by unprivileged user (1000:1000)
       systemd.tmpfiles.rules = [
         "d /var/lib/zotero-webdav 0750 1000 1000 -"
       ];
 
-      # WebDAV container running as unprivileged user 1000:1000
-      virtualisation.oci-containers.backend = "podman";
+      # WebDAV container running on Docker backend as unprivileged user 1000:1000
+      virtualisation.oci-containers.backend = "docker";
       virtualisation.oci-containers.containers.zotero-webdav = {
         image = "hurlenko/webdav:v1.3.0";
         autoStart = true;
