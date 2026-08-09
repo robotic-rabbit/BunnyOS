@@ -31,6 +31,9 @@
     # Enable SSH 
     services.openssh.enable = true;
 
+    # Enable Zotero WebDAV sync service
+    services.zotero-webdav.enable = true;
+
     # Enable Docker
     virtualisation.docker.enable = true;
 
