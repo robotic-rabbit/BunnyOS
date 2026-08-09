@@ -36,11 +36,6 @@
     services.zotero-webdav = {
       enable = true;
       domain = "burrow";
-      virtualHosts."http://${cfg.domain}" = {
-          extraConfig = ''
-            reverse_proxy 127.0.0.1:${toString cfg.port}
-          '';
-        };
       environmentFile = "/var/lib/zotero-webdav/env";
     };
 

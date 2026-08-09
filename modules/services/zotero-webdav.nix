@@ -58,7 +58,7 @@
       # Caddy reverse proxy (Simplified and correct for WebDAV)
       services.caddy = {
         enable = true;
-        virtualHosts."${cfg.domain}" = {
+        virtualHosts."http://${cfg.domain}" = {
           extraConfig = ''
             reverse_proxy 127.0.0.1:${toString cfg.port}
           '';
