@@ -35,13 +35,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = cfg.domain != "";
-        message = "services.zotero-webdav.domain cannot be empty.";
-      }
-    ];
-
     # Enable Podman for running OCI containers
     virtualisation.podman = {
       enable = true;
@@ -94,4 +87,11 @@ in
     # Ensure firewall allows HTTP/HTTPS for proxy traffic
     networking.firewall.allowedTCPPorts = [ 80 443 ];
   };
+
+  assertions = [
+    {
+      assertion = cfg.enable -> (cfg.domain != "");
+      message = "services.zotero-webdav.domain cannot be empty when zotero-webdav is enabled.";
+    }
+  ];
 }
